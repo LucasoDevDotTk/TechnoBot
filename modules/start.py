@@ -43,8 +43,8 @@ ________________________________________________________________________________
                                             
                                             INFO
                                 
-                            BUILD           :  30DES21
-                            VERSION         :  0.0.1
+                            BUILD           :  2JAN22
+                            VERSION         :  0.0.3
                             API             :  py-cord v2.0.0
                             LICENSE         :  MIT, see in LICENSE
                             AUTHORS         :  Copyright (c) 2021 lucaso60,  

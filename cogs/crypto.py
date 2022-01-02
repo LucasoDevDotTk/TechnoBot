@@ -49,6 +49,7 @@ async def get_news():
             data = await response.json()
     return data
 
+
 # Cog
 
 
@@ -56,13 +57,47 @@ class crypto(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    cryptocompare_error = discord.Embed(
+        title="Error - CryptoCompare", description="An error has occured with the CryptoCompare API. Please try again later.", color=discord.Color.red())
+    cryptocompare_error.add_field(
+        name="Information", value="If this error persists, try to replace the parameters if you can or contact the developer.")
+    cryptocompare_error.add_field(
+        name="Parameters", value="If you can pass in parameters, CryptoCompare may not have the data you requested.")
+    cryptocompare_error.set_thumbnail(
+        url="https://www.cryptocompare.com/media/35264254/72_horizontal_fullcolour_darkblueflashgreen.png")
+    cryptocompare_error.set_footer(text="Error Message")
+
+    @slash_command(name="cryptonews")
+    async def cryptonews(self, ctx: commands.Context):
+        try:
+            data = await get_news()
+            embed = discord.Embed(
+                title="Crypto News",
+                color=0x00ff00
+            )
+            embed.set_thumbnail(url=data['Data'][0]['imageurl'])
+            embed.add_field(
+                name=data['Data'][0]['title'],
+                value=data['Data'][0]['body'],
+                inline=False
+            )
+            embed.set_footer(text=f"Source: min-api.cryptocompare.com")
+            await ctx.send(embed=embed)
+        except:
+            await ctx.send(embed=self.cryptocompare_error)
+
     @slash_command(name="cryptoprice")
     async def cryptoprice(self, ctx: commands.Context, *, symbol: str):
         try:
             data = await get_price(symbol)
-            await ctx.send(f"The current price of {symbol} is {data['USD']} USD")
+            embed = discord.Embed(title="Crypto Price", color=0x00ff00)
+            embed.add_field(name=f"{symbol} Price", value=f"${data['USD']}")
+            embed.set_thumbnail(
+                url="https://www.cryptocompare.com/media/35264254/72_horizontal_fullcolour_darkblueflashgreen.png")
+            embed.set_footer(text=f"Source: min-api.cryptocompare.com")
+            await ctx.send(embed=embed)
         except:
-            await ctx.send(f"Ohh no! It seems like {symbol} wasnt in the min-api.cryptocompare.com database. Try again later.")
+            await ctx.send(embed=self.cryptocompare_error)
 
 
 def setup(bot: commands.Bot):
